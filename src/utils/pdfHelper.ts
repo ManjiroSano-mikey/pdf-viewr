@@ -1,14 +1,11 @@
 import * as pdfjsLib from 'pdfjs-dist';
 
-// Configure the worker from standard CDN.
-// In Vite projects, this is the most reliable way to load the PDF.js worker
-// without run-time configuration issues or bundler warnings.
-const PDFJS_VERSION = '4.2.67'; // Fallback version if version is not readable
+const PDFJS_VERSION = '6.0.227'; // Fallback version matching package.json
 try {
   const version = pdfjsLib.version || PDFJS_VERSION;
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${version}/pdf.worker.min.js`;
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${version}/build/pdf.worker.min.mjs`;
 } catch (e) {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.worker.min.js`;
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${PDFJS_VERSION}/build/pdf.worker.min.mjs`;
 }
 
 export interface PDFInfo {
@@ -84,6 +81,7 @@ export async function generatePDFCoverBlob(pdfBlob: Blob): Promise<Blob> {
     await page.render({
       canvasContext: context,
       viewport: viewport,
+      canvas: canvas,
     }).promise;
     
     // Convert canvas back to a JPEG blob

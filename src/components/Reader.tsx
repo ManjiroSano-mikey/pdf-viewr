@@ -12,12 +12,12 @@ import {
 } from './Icons';
 
 // Ensure worker path is set
-const PDFJS_VERSION = '4.2.67';
+const PDFJS_VERSION = '6.0.227';
 try {
   const version = pdfjsLib.version || PDFJS_VERSION;
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${version}/pdf.worker.min.js`;
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${version}/build/pdf.worker.min.mjs`;
 } catch (e) {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${PDFJS_VERSION}/pdf.worker.min.js`;
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${PDFJS_VERSION}/build/pdf.worker.min.mjs`;
 }
 
 interface ReaderProps {
@@ -107,6 +107,7 @@ export const Reader: React.FC<ReaderProps> = ({ bookId, onClose }) => {
         const renderContext = {
           canvasContext: context,
           viewport: viewport,
+          canvas: canvas,
         };
 
         const renderTask = page.render(renderContext);
