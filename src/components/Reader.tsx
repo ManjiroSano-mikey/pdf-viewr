@@ -89,10 +89,16 @@ export const Reader: React.FC<ReaderProps> = ({ bookId, onClose }) => {
         const page = await pdf.getPage(pageNumber);
         
         // Calculate viewport according to zoom factor
-        // Base viewport width to be roughly matching container width
-        const containerWidth = 370; // Standard mobile inside width
+        // Base layout width at 100% zoom (e.g. 350px for nice margins in simulated phone)
+        const containerWidth = 350; 
         const baseViewport = page.getViewport({ scale: 1.0 });
-        const scale = (containerWidth / baseViewport.width) * zoom;
+        
+        // CSS display size (zoomed layout size)
+        const displayWidth = containerWidth * zoom;
+        const displayHeight = (baseViewport.height / baseViewport.width) * displayWidth;
+        
+        // Drawing resolution scale: render at 2x layout size for high-DPI retina sharpness
+        const scale = (displayWidth / baseViewport.width) * 2;
         const viewport = page.getViewport({ scale });
 
         const canvas = canvasRef.current;
@@ -101,8 +107,13 @@ export const Reader: React.FC<ReaderProps> = ({ bookId, onClose }) => {
         const context = canvas.getContext('2d');
         if (!context) return;
 
-        canvas.height = viewport.height;
+        // Set the internal high-resolution drawing buffer
         canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        
+        // Set the actual layout display size on screen (handles overflow and zoom scroll)
+        canvas.style.width = `${displayWidth}px`;
+        canvas.style.height = `${displayHeight}px`;
 
         const renderContext = {
           canvasContext: context,

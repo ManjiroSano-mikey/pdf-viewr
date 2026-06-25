@@ -703,9 +703,7 @@ body {
 .reader-content {
   flex: 1;
   overflow: auto;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
+  display: block; /* Changed to block to allow scrollable overflow without flex clipping */
   padding: 16px 8px;
   position: relative;
 }
@@ -736,12 +734,13 @@ body {
   border-radius: 8px;
   background-color: #fff;
   overflow: hidden;
+  margin: 0 auto; /* Center the block horizontally */
+  width: fit-content; /* Wrap tightly around the canvas */
 }
 
 .pdf-canvas {
   display: block;
-  max-width: 100%;
-  height: auto;
+  /* max-width removed to allow canvas to scale beyond parent container when zoomed */
   border-radius: 8px;
   transition: opacity 0.15s ease;
 }
