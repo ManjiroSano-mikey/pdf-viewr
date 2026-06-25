@@ -11,13 +11,13 @@ import {
   XIcon 
 } from './Icons';
 
-// Ensure worker path is set
-const PDFJS_VERSION = '6.0.227';
+// @ts-ignore
+import PDFWorker from 'pdfjs-dist/build/pdf.worker.mjs?worker';
+
 try {
-  const version = pdfjsLib.version || PDFJS_VERSION;
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${version}/build/pdf.worker.min.mjs`;
+  pdfjsLib.GlobalWorkerOptions.workerPort = new PDFWorker();
 } catch (e) {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${PDFJS_VERSION}/build/pdf.worker.min.mjs`;
+  console.error('Failed to set PDF.js workerPort in Reader', e);
 }
 
 interface ReaderProps {
